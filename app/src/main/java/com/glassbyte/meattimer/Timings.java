@@ -24,7 +24,7 @@ public class Timings {
     public static final long FILLET_STEAK_MEDIUM_RARE = 4 * ONE_MINUTE + THIRTY_SECONDS;
     public static final long FILLET_STEAK_MEDIUM = 5 * ONE_MINUTE + THIRTY_SECONDS;
     public static final long FILLET_STEAK_WELL_DONE = 7 * ONE_MINUTE;
-    //striploin/ribeye/sirloin - 2-3cm thick
+    //strip-loin/rib-eye/sirloin - 2-3cm thick
     public static final long STRIP_LOIN_RARE = 3 * ONE_MINUTE;
     public static final long STRIP_LOIN_MEDIUM_RARE = 3 * ONE_MINUTE + THIRTY_SECONDS;
     public static final long STRIP_LOIN_MEDIUM = 4 * ONE_MINUTE + THIRTY_SECONDS;
@@ -71,6 +71,23 @@ public class Timings {
 
     public static long getMillisInHours(long millis){
         return TimeUnit.MILLISECONDS.toHours(millis);
+    }
+
+    public static String formatTimeWithSeconds(long millis, boolean hasSeconds){
+        String hours = String.valueOf(((millis / ONE_HOUR) % 24));
+        String minutes = String.valueOf(((millis / ONE_MINUTE) % 60));
+        String seconds = String.valueOf(((millis / ONE_SECOND) % 60));
+
+        if(Integer.parseInt(minutes) < 10)
+            minutes = "0" + minutes;
+
+        if(Integer.parseInt(seconds) < 10)
+            seconds = "0" + seconds;
+
+        if(hasSeconds)
+            return hours + ":" + minutes + ":" + seconds;
+
+        return hours + ":" + minutes;
     }
 
     public static long getRoastChickenTime(float weight){

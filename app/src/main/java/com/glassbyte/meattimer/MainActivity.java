@@ -1,6 +1,7 @@
 package com.glassbyte.meattimer;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView textView = (TextView) findViewById(R.id.text_main);
-        textView.setText("" + Timings.getMillisInMinutes(Timings.getRoastChickenTime(2000f)) + " mins");
+        final TextView textView = (TextView) findViewById(R.id.text_main);
+        CountDownTimer countDownTimer = new CountDownTimer(Timings.getFishTime(3.5f), Timings.ONE_SECOND) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                textView.setText(Timings.formatTimeWithSeconds(millisUntilFinished, true) + " remaining");
+            }
+
+            @Override
+            public void onFinish() {
+                textView.setText("Done!");
+            }
+        };
+
+        countDownTimer.start();
     }
 
     @Override
