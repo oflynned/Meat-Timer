@@ -11,10 +11,7 @@ public class Timings {
     public static final long ONE_SECOND = 1000;
     public static final long THIRTY_SECONDS = ONE_SECOND * 30;
     public static final long ONE_MINUTE = ONE_SECOND * 60;
-    public static final long FIFTEEN_MINUTES = ONE_MINUTE * 15;
-    public static final long THIRTY_MINUTES = ONE_MINUTE * 30;
     public static final long ONE_HOUR = ONE_MINUTE * 60;
-    public static final long TWO_HOURS = ONE_HOUR * 2;
 
     //recommended times
 
@@ -60,6 +57,8 @@ public class Timings {
     public static final float CHICKEN_COEFF = 500f; //g
     public static final float ROAST_BEEF_COEFF = 450f; //g
     public static final float FISH_COEFF = 2.5f; //cm
+    public static final float TURKEY_COEFF = 1000f; //g
+    public static final float HAM_COEFF = 450f; //g
 
     public static long getNumberOfMinsInMillis(int mins){
         return mins * ONE_MINUTE;
@@ -73,10 +72,13 @@ public class Timings {
         return TimeUnit.MILLISECONDS.toHours(millis);
     }
 
-    public static String formatTimeWithSeconds(long millis, boolean hasSeconds){
+    public static String formatTime(long millis, boolean hasSeconds){
         String hours = String.valueOf(((millis / ONE_HOUR) % 24));
         String minutes = String.valueOf(((millis / ONE_MINUTE) % 60));
         String seconds = String.valueOf(((millis / ONE_SECOND) % 60));
+
+        if(Integer.parseInt(hours) < 10)
+            hours = "0" + hours;
 
         if(Integer.parseInt(minutes) < 10)
             minutes = "0" + minutes;
@@ -94,6 +96,24 @@ public class Timings {
         return (long) ((ONE_MINUTE * 25) * Math.floor(weight / CHICKEN_COEFF) +
                 (ONE_MINUTE * 25) * ((weight % CHICKEN_COEFF) / CHICKEN_COEFF) +
                 (25 * ONE_MINUTE));
+    }
+
+    public static long getRoastHamTime(float weight){
+        return (long) ((ONE_MINUTE * 30) * Math.floor(weight / HAM_COEFF) +
+                (ONE_MINUTE * 30) * ((weight % HAM_COEFF) / HAM_COEFF) +
+                (30 * ONE_MINUTE));
+    }
+
+    public static long getRoastTurkeyTime(float weight){
+        if(weight > 4 * TURKEY_COEFF){
+            return (long) ((20 * ONE_MINUTE) * Math.floor(weight / TURKEY_COEFF) +
+                    ((20 * ONE_MINUTE) * (weight % TURKEY_COEFF) / TURKEY_COEFF) +
+                    90 * ONE_MINUTE);
+        } else {
+            return (long) ((20 * ONE_MINUTE) * Math.floor(weight / TURKEY_COEFF) +
+                    ((20 * ONE_MINUTE) * (weight % TURKEY_COEFF) / TURKEY_COEFF) +
+                    70 * ONE_MINUTE);
+        }
     }
 
     public static long getRoastBeefTime(float weight, String rareness){
@@ -123,6 +143,6 @@ public class Timings {
     public static long getFishTime(float thickness) {
         if (thickness > FISH_COEFF)
             return (long) (10 * ONE_MINUTE * (Math.floor(thickness / FISH_COEFF) + (thickness % FISH_COEFF) / FISH_COEFF));
-        else return (long) (10 * (thickness / FISH_COEFF));
+        else return (long) (10 * ONE_MINUTE * (thickness / FISH_COEFF));
     }
 }

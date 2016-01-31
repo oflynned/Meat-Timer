@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MeatTimer</string>
     <string name="action_settings">Settings</string>
+
+    <!-- tips -->
+    <string name="tip_1"></string>
 </resources>

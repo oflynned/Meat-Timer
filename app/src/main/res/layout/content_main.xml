@@ -13,8 +13,21 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:id="@+id/text_main"
+        android:id="@+id/time_remaining"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Hello World!"
+        android:layout_centerInParent="true" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:layout_gravity="center"
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:background_progressbar_color="#FFCDD2"
+        app:background_progressbar_width="5dp"
+        app:progressbar_color="#F44336"
+        app:progressbar_width="10dp"
+        android:gravity="center"
+        android:layout_centerInParent="true" />
 </RelativeLayout>
