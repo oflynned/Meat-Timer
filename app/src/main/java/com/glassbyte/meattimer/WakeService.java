@@ -17,7 +17,7 @@ public class WakeService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        //wake phone to check if countdown is still running
+        //check if to sound alarm?
     }
 
     public static boolean isServiceRunning(Class<?> serviceClass, Activity activity) {

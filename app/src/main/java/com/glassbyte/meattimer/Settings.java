@@ -19,6 +19,11 @@ public class Settings extends PreferenceActivity {
     SharedPreferences.Editor editor;
     PreferenceScreen preferenceScreen;
 
+    //more apps, pls rate
+    //units - metric, US imperial, UK imperial
+    //temperature - fahrenheit, celsius, kelvin
+    //language - english, irish
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +36,7 @@ public class Settings extends PreferenceActivity {
                 sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 preferenceScreen = getPreferenceManager().createPreferenceScreen(getActivity());
 
-                PreferenceCategory moreCategory, appSettings, languageSettings;
+                PreferenceCategory units, languageSettings;
             }
 
             @Override

@@ -60,18 +60,39 @@ public class Timings {
     public static final float TURKEY_COEFF = 1000f; //g
     public static final float HAM_COEFF = 450f; //g
 
+    /**
+     * Convert mins to millis
+     * @param mins to be converted
+     * @return millis representation of mins
+     */
     public static long getNumberOfMinsInMillis(int mins){
         return mins * ONE_MINUTE;
     }
 
+    /**
+     * Convert millis to mins
+     * @param millis to be converted
+     * @return minute representation of millis
+     */
     public static long getMillisInMinutes(long millis){
         return TimeUnit.MILLISECONDS.toMinutes(millis);
     }
 
+    /**
+     * Converts millis to hours
+     * @param millis millis to be converted
+     * @return hour representation of millis
+     */
     public static long getMillisInHours(long millis){
         return TimeUnit.MILLISECONDS.toHours(millis);
     }
 
+    /**
+     * Formats a millis representation to that of hh:mm:ss
+     * @param millis millis to elapse
+     * @param hasSeconds boolean should format seconds
+     * @return representation of millis in given format
+     */
     public static String formatTime(long millis, boolean hasSeconds){
         String hours = String.valueOf(((millis / ONE_HOUR) % 24));
         String minutes = String.valueOf(((millis / ONE_MINUTE) % 60));
@@ -92,18 +113,36 @@ public class Timings {
         return hours + ":" + minutes;
     }
 
+    /**
+     * Returns the time in millis with respect to the weight of the piece
+     * of meat until cooked
+     * @param weight weight in grams of the whole chicken
+     * @return the time in millis to elapse until done
+     */
     public static long getRoastChickenTime(float weight){
         return (long) ((ONE_MINUTE * 25) * Math.floor(weight / CHICKEN_COEFF) +
                 (ONE_MINUTE * 25) * ((weight % CHICKEN_COEFF) / CHICKEN_COEFF) +
                 (25 * ONE_MINUTE));
     }
 
+    /**
+     * Returns the time in millis of cooking time for a roast ham with
+     * respect to the weight of the piece of meat
+     * @param weight weight in grams of the piece of meat
+     * @return the time to elapse until cooked
+     */
     public static long getRoastHamTime(float weight){
         return (long) ((ONE_MINUTE * 30) * Math.floor(weight / HAM_COEFF) +
                 (ONE_MINUTE * 30) * ((weight % HAM_COEFF) / HAM_COEFF) +
                 (30 * ONE_MINUTE));
     }
 
+    /**
+     * Returns the time in millis of cooking time for a roast turkey with
+     * respect to weight in grams
+     * @param weight weight in grams
+     * @return the cooking time in millis of a turkey
+     */
     public static long getRoastTurkeyTime(float weight){
         if(weight > 4 * TURKEY_COEFF){
             return (long) ((20 * ONE_MINUTE) * Math.floor(weight / TURKEY_COEFF) +
@@ -116,31 +155,41 @@ public class Timings {
         }
     }
 
+    /**
+     * Returns the time in millis of cooking time for roast beef with respect to
+     * weight and also the level of rareness
+     * @param weight weight in grams of the meat
+     * @param rareness rareness of final cooked meat
+     * @return cooking time in millis
+     */
     public static long getRoastBeefTime(float weight, String rareness){
-        long time = 0;
         switch(rareness){
             case "RARE":
-                time = (long) ((20 * ONE_MINUTE) +
+                return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF));
-                break;
             case "MEDIUM":
-                time = (long) ((20 * ONE_MINUTE) +
+                return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +
                         15 * ONE_MINUTE);
-                break;
             case "WELL DONE":
-                time = (long) ((20 * ONE_MINUTE) +
+                return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +
                         30 * ONE_MINUTE);
-                break;
+            default:
+                return -1;
         }
-        return time;
     }
 
+    /**
+     * Returns time in millis of fish cooking time via thickness in cm
+     * @param thickness the thickness of the fish in cm
+     * @return milliseconds to cook for
+     */
     public static long getFishTime(float thickness) {
+        //thickness in cm
         if (thickness > FISH_COEFF)
             return (long) (10 * ONE_MINUTE * (Math.floor(thickness / FISH_COEFF) + (thickness % FISH_COEFF) / FISH_COEFF));
         else return (long) (10 * ONE_MINUTE * (thickness / FISH_COEFF));
