@@ -8,10 +8,6 @@
     tools:context="com.glassbyte.meattimer.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </GridView>
+    <include layout="@layout/gridview_layout"/>
 
 </android.support.v4.widget.NestedScrollView>

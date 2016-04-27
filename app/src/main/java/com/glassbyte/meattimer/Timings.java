@@ -164,16 +164,16 @@ public class Timings {
      */
     public static long getRoastBeefTime(float weight, String rareness){
         switch(rareness){
-            case "RARE":
+            case "Rare":
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF));
-            case "MEDIUM":
+            case "Medium":
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +
                         15 * ONE_MINUTE);
-            case "WELL DONE":
+            case "Well Done":
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +
