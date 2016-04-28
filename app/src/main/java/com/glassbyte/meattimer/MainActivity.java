@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     mGridView.setAdapter(new Adapter(this));
                     break;
-                default:
+                case 1:
                     if (mMeatCategories == MeatCategories.CHICKEN)
                         mGridView.setAdapter(new Adapter(this));
                     else if (mMeatCategories == MeatCategories.BEEF)
@@ -67,10 +67,41 @@ public class MainActivity extends AppCompatActivity {
                     else if (mMeatCategories == MeatCategories.LAMB)
                         mGridView.setAdapter(new Adapter(this));
                     break;
+                case 2:
+                    if (mMeatCategories == MeatCategories.CHICKEN) {
+                        if (mChickenCategories == ChickenCategories.BBQ)
+                            mGridView.setAdapter(new Adapter(this));
+                        else if (mChickenCategories == ChickenCategories.ROAST)
+                            mGridView.setAdapter(new Adapter(this));
+                        else if (mChickenCategories == ChickenCategories.PAN)
+                            mGridView.setAdapter(new Adapter(this));
+                        else if (mChickenCategories == ChickenCategories.OVEN)
+                            mGridView.setAdapter(new Adapter(this));
+                    }
+                    else if (mMeatCategories == MeatCategories.BEEF)
+                        mGridView.setAdapter(new Adapter(this));
+                    else if (mMeatCategories == MeatCategories.STEAK) {
+                        if(mSteakCategories == SteakCategories.FILLET)
+                            mGridView.setAdapter(new Adapter(this));
+                        else if(mSteakCategories == SteakCategories.STRIPLOIN)
+                            mGridView.setAdapter(mBaseAdapter);
+                        else if(mSteakCategories == SteakCategories.TBONE)
+                            mGridView.setAdapter(mBaseAdapter);
+                    }
+                    else if (mMeatCategories == MeatCategories.FISH)
+                        mGridView.setAdapter(new Adapter(this));
+                    else if (mMeatCategories == MeatCategories.TURKEY)
+                        mGridView.setAdapter(new Adapter(this));
+                    else if (mMeatCategories == MeatCategories.PORK)
+                        mGridView.setAdapter(new Adapter(this));
+                    else if (mMeatCategories == MeatCategories.LAMB)
+                        mGridView.setAdapter(new Adapter(this));
+                    break;
             }
         } else {
             super.onBackPressed();
         }
+        System.out.println(mStage);
     }
 
     @Override
@@ -122,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     mGridView.setAdapter(mBaseAdapter);
                 } else if (mStage == 1) {
-                    mStage++;
                     if (getCurrentMeatCategory() == MeatCategories.CHICKEN) {
                         switch (position) {
                             case 0:
@@ -148,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.BEEF) {
                         mCurrentMeat = mBeefMeat;
+                        mGridView.setAdapter(mBaseAdapter);
                     } else if (getCurrentMeatCategory() == MeatCategories.FISH) {
                         mCurrentMeat = mFishMeat;
                     } else if (getCurrentMeatCategory() == MeatCategories.HAM) {
@@ -160,12 +191,18 @@ public class MainActivity extends AppCompatActivity {
                         switch(position) {
                             case 0:
                                 setCurrentSteakCategory(SteakCategories.FILLET);
+                                mStage++;
+                                mGridView.setAdapter(mBaseAdapter);
                                 break;
                             case 1:
                                 setCurrentSteakCategory(SteakCategories.STRIPLOIN);
+                                mStage++;
+                                mGridView.setAdapter(mBaseAdapter);
                                 break;
                             case 2:
                                 setCurrentSteakCategory(SteakCategories.TBONE);
+                                mStage++;
+                                mGridView.setAdapter(mBaseAdapter);
                                 break;
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.TURKEY) {
@@ -222,18 +259,57 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.STEAK) {
-                        switch (position) {
-                            case 0:
-                                //FILLET
-                                break;
-                            case 1:
-                                //STRIP LOIN
-                                break;
-                            case 2:
-                                //TBONE
-                                break;
+                        if(getCurrentSteakCategory() == SteakCategories.TBONE) {
+                            mCurrentMeat = mSteakTBoneMeat;
+                            switch (position) {
+                                case 0:
+                                    //RARE
+                                    break;
+                                case 1:
+                                    //MEDIUM RARE
+                                    break;
+                                case 2:
+                                    //MEDIUM
+                                    break;
+                                case 3:
+                                    //WELL DONE
+                                    break;
+                            }
+                        } else if(getCurrentSteakCategory() == SteakCategories.STRIPLOIN) {
+                            mCurrentMeat = mSteakStripLoinMeat;
+                            switch (position) {
+                                case 0:
+                                    //RARE
+                                    break;
+                                case 1:
+                                    //MEDIUM RARE
+                                    break;
+                                case 2:
+                                    //MEDIUM
+                                    break;
+                                case 3:
+                                    //WELL DONE
+                                    break;
+                            }
+                        } else if(getCurrentSteakCategory() == SteakCategories.FILLET) {
+                            mCurrentMeat = mSteakFilletMeat;
+                            switch (position) {
+                                case 0:
+                                    //RARE
+                                    break;
+                                case 1:
+                                    //MEDIUM RARE
+                                    break;
+                                case 2:
+                                    //MEDIUM
+                                    break;
+                                case 3:
+                                    //WELL DONE
+                                    break;
+                            }
                         }
                     }
+                    Toast.makeText(MainActivity.this, Timings.formatTime(mCurrentMeat[position].getDuration(), true), Toast.LENGTH_LONG).show();
                     mGridView.setAdapter(mBaseAdapter);
                 }
             }
@@ -288,22 +364,22 @@ public class MainActivity extends AppCompatActivity {
         mSteakCategory[2] = new MeatCategory("T-Bone", null);
 
         mSteakFilletMeat = new Meat[4];
-        mSteakFilletMeat[0] = new Meat("Fillet Rare", Timings.FILLET_STEAK_RARE, true, null);
-        mSteakFilletMeat[1] = new Meat("Fillet Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE, null);
-        mSteakFilletMeat[2] = new Meat("Fillet Medium", Timings.FILLET_STEAK_MEDIUM, null);
-        mSteakFilletMeat[3] = new Meat("Fillet Well Done", Timings.FILLET_STEAK_WELL_DONE, null);
+        mSteakFilletMeat[0] = new Meat("Rare", Timings.FILLET_STEAK_RARE, true, null);
+        mSteakFilletMeat[1] = new Meat("Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE, null);
+        mSteakFilletMeat[2] = new Meat("Medium", Timings.FILLET_STEAK_MEDIUM, null);
+        mSteakFilletMeat[3] = new Meat("Well Done", Timings.FILLET_STEAK_WELL_DONE, null);
 
         mSteakTBoneMeat = new Meat[4];
-        mSteakTBoneMeat[0] = new Meat("T-Bone Rare", Timings.T_BONE_RARE, true, null);
-        mSteakTBoneMeat[1] = new Meat("T-Bone Medium Rare", Timings.T_BONE_MEDIUM_RARE, true, null);
-        mSteakTBoneMeat[2] = new Meat("T-Bone Medium", Timings.T_BONE_MEDIUM, true, null);
-        mSteakTBoneMeat[3] = new Meat("T-Bone Well Done", Timings.T_BONE_WELL_DONE, true, null);
+        mSteakTBoneMeat[0] = new Meat("Rare", Timings.T_BONE_RARE, true, null);
+        mSteakTBoneMeat[1] = new Meat("Medium Rare", Timings.T_BONE_MEDIUM_RARE, true, null);
+        mSteakTBoneMeat[2] = new Meat("Medium", Timings.T_BONE_MEDIUM, true, null);
+        mSteakTBoneMeat[3] = new Meat("Well Done", Timings.T_BONE_WELL_DONE, true, null);
 
         mSteakStripLoinMeat = new Meat[4];
-        mSteakStripLoinMeat[0] = new Meat("Strip Loin Rare", Timings.STRIP_LOIN_RARE, true, null);
-        mSteakStripLoinMeat[1] = new Meat("Strip Loin Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true, null);
-        mSteakStripLoinMeat[2] = new Meat("Strip Loin Medium", Timings.STRIP_LOIN_MEDIUM, true, null);
-        mSteakStripLoinMeat[3] = new Meat("Strip Loin Well Done", Timings.STRIP_LOIN_WELL_DONE, true, null);
+        mSteakStripLoinMeat[0] = new Meat("Rare", Timings.STRIP_LOIN_RARE, true, null);
+        mSteakStripLoinMeat[1] = new Meat("Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true, null);
+        mSteakStripLoinMeat[2] = new Meat("Medium", Timings.STRIP_LOIN_MEDIUM, true, null);
+        mSteakStripLoinMeat[3] = new Meat("Well Done", Timings.STRIP_LOIN_WELL_DONE, true, null);
 
         mLambMeat = new Meat[3];
         mLambMeat[0] = new Meat("Lamb Chops", Timings.LAMB_CHOPS, true, null);
@@ -312,6 +388,12 @@ public class MainActivity extends AppCompatActivity {
 
         mHamMeat = new Meat[1];
         mHamMeat[0] = new Meat("Roast Ham", false, null);
+
+        mPorkMeat = new Meat[1];
+        mPorkMeat[0] = new Meat("hmm...", 0, true, null);
+
+        mTurkeyMeat = new Meat[1];
+        mTurkeyMeat[0] = new Meat("Roast Turkey", false, null);
     }
 
     @Override
@@ -486,7 +568,6 @@ public class MainActivity extends AppCompatActivity {
                 textTitle.setText(title);
                 meatImage.setImageResource(R.mipmap.ic_launcher);
             }
-
             return view;
         }
     }

@@ -7,27 +7,34 @@
     android:minWidth="120dp">
 
     <RelativeLayout
+        android:id="@+id/imageHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
         <ImageView
             android:id="@+id/image"
-            android:src="@mipmap/ic_launcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:src="@mipmap/ic_launcher" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/textHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/image"
-            android:layout_gravity="center_horizontal"
             android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:padding="5dp"
+            android:paddingBottom="10dp"
             android:text="Roast Chicken"
             android:textColor="@android:color/white" />
     </RelativeLayout>
