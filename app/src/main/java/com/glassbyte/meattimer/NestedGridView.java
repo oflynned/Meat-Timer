@@ -11,10 +11,6 @@ import android.widget.GridView;
 public class NestedGridView extends GridView {
 
     boolean mExpanded = false;
-    public boolean isExpanded()
-    {
-        return mExpanded;
-    }
 
     public NestedGridView(Context context)
     {
@@ -34,8 +30,7 @@ public class NestedGridView extends GridView {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        if (isExpanded())
-        {
+        if (isExpanded()) {
             int expandSpec = MeasureSpec.makeMeasureSpec(
                     Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
             super.onMeasure(widthMeasureSpec, expandSpec);
@@ -43,10 +38,14 @@ public class NestedGridView extends GridView {
             ViewGroup.LayoutParams params = getLayoutParams();
             params.height = getMeasuredHeight();
         }
-        else
-        {
+        else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
+    }
+
+    public boolean isExpanded()
+    {
+        return mExpanded;
     }
 
     public void setExpanded(boolean mExpanded) {
