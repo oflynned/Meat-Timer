@@ -14,7 +14,6 @@ public class Timings {
     public static final long ONE_HOUR = ONE_MINUTE * 60;
 
     //recommended times
-
     //steak
     //fillet - 4.5-5cm thick
     public static final long FILLET_STEAK_RARE = 3 * ONE_MINUTE + THIRTY_SECONDS;
@@ -41,8 +40,8 @@ public class Timings {
     //grill/bbq
     public static final long CHICKEN_BBQ_BREAST = 10 * ONE_MINUTE;
     public static final long CHICKEN_BBQ_STRIPS = 7 * ONE_MINUTE;
-    public static final long CHICKEN_BBQ_DRUMSTICKS_THIGHS = 30 * ONE_MINUTE;
-    public static final long CHICKEN_BBQ_WINGS = 40 * ONE_MINUTE;
+    public static final long CHICKEN_BBQ_DRUMSTICKS_THIGHS = 15 * ONE_MINUTE;
+    public static final long CHICKEN_BBQ_WINGS = 20 * ONE_MINUTE;
 
     //beef
     //burgers
