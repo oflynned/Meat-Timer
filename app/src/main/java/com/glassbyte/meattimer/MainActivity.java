@@ -2,6 +2,8 @@ package com.glassbyte.meattimer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
@@ -31,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     Meat mChickenBBQMeat[], mChickenOvenMeat[], mChickenPanMeat[], mChickenRoastMeat[],
             mBeefMeat[], mFishMeat[], mSteakFilletMeat[], mSteakTBoneMeat[], mSteakStripLoinMeat[],
             mLambMeat[], mPorkMeat[], mTurkeyMeat[], mHamMeat[], mCurrentMeat[];
+
+    Bitmap b_chicken, b_cow, b_fish, b_pig, b_sheep;
+    Bitmap b_bbq, b_oven, b_pan, b_roast;
+    Bitmap b_strips, b_drumstick, b_null;
 
     private enum MeatCategories {
         BEEF, CHICKEN, FISH, HAM, LAMB, PORK, STEAK, TURKEY
@@ -328,129 +334,102 @@ public class MainActivity extends AppCompatActivity {
      * Initialise all meat objects with times and appropriate parameters
      */
     private void initialiseMeats() {
+        //bitmaps
+
+        int height = 128, width = 128;
+
+        b_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.chicken_animal, width, height);
+        b_cow = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.cow_animal, width, height);
+        b_fish = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.fish_2, width, height);
+        b_pig = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pig_animal, width, height);
+        b_sheep = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.sheep_animal, width, height);
+
+        b_bbq = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.bbq, width, height);
+        b_oven = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.oven, width, height);
+        b_pan = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pan, width, height);
+        b_roast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, width, height);
+
+        b_strips = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.strips, width, height);
+        b_drumstick = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.drumstick, width, height);
+        b_null = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.mipmap.ic_launcher, width, height);
+
         mCategory = new MeatCategory[8];
-        mCategory[0] = new MeatCategory("Beef", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.cow_animal, null));
-        mCategory[1] = new MeatCategory("Chicken", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.chicken_animal, null));
-        mCategory[2] = new MeatCategory("Fish", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.fish_2, null));
-        mCategory[3] = new MeatCategory("Ham", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.pig_animal, null));
-        mCategory[4] = new MeatCategory("Lamb", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.sheep_animal, null));
-        mCategory[5] = new MeatCategory("Pork", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.pig_animal, null));
-        mCategory[6] = new MeatCategory("Steak", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.cow_animal, null));
-        mCategory[7] = new MeatCategory("Turkey", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.chicken_animal, null));
+        mCategory[0] = new MeatCategory("Beef", b_cow);
+        mCategory[1] = new MeatCategory("Chicken", b_chicken);
+        mCategory[2] = new MeatCategory("Fish", b_fish);
+        mCategory[3] = new MeatCategory("Ham", b_pig);
+        mCategory[4] = new MeatCategory("Lamb", b_sheep);
+        mCategory[5] = new MeatCategory("Pork", b_pig);
+        mCategory[6] = new MeatCategory("Steak", b_cow);
+        mCategory[7] = new MeatCategory("Turkey", b_chicken);
 
         mChickenCategory = new MeatCategory[4];
-        mChickenCategory[0] = new MeatCategory("BBQ", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.bbq, null));
-        mChickenCategory[1] = new MeatCategory("Oven", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.oven, null));
-        mChickenCategory[2] = new MeatCategory("Pan", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.pan, null));
-        mChickenCategory[3] = new MeatCategory("Roast", ResourcesCompat.getDrawable(getResources(),
-                R.drawable.turkey_2, null));
+        mChickenCategory[0] = new MeatCategory("BBQ", null);
+        mChickenCategory[1] = new MeatCategory("Oven", null);
+        mChickenCategory[2] = new MeatCategory("Pan", null);
+        mChickenCategory[3] = new MeatCategory("Roast", null);
 
         mChickenBBQMeat = new Meat[5];
-        mChickenBBQMeat[0] = new Meat("Breast", Timings.CHICKEN_BBQ_BREAST, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mChickenBBQMeat[1] = new Meat("Strips", Timings.CHICKEN_BBQ_STRIPS, true,
-                ResourcesCompat.getDrawable(getResources(), R.drawable.strips, null));
-        mChickenBBQMeat[2] = new Meat("Drumsticks", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true,
-                ResourcesCompat.getDrawable(getResources(), R.drawable.drumstick, null));
-        mChickenBBQMeat[3] = new Meat("Thighs", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true,
-                ResourcesCompat.getDrawable(getResources(), R.drawable.drumstick, null));
-        mChickenBBQMeat[4] = new Meat("Wings", Timings.CHICKEN_BBQ_WINGS, true,
-                ResourcesCompat.getDrawable(getResources(), R.drawable.drumstick, null));
+        mChickenBBQMeat[0] = new Meat("Breast", Timings.CHICKEN_BBQ_BREAST, true, b_bbq);
+        mChickenBBQMeat[1] = new Meat("Strips", Timings.CHICKEN_BBQ_STRIPS, true, b_strips);
+        mChickenBBQMeat[2] = new Meat("Drumsticks", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true, b_drumstick);
+        mChickenBBQMeat[3] = new Meat("Thighs", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true, b_drumstick);
+        mChickenBBQMeat[4] = new Meat("Wings", Timings.CHICKEN_BBQ_WINGS, true, b_drumstick);
 
         mChickenOvenMeat = new Meat[3];
-        mChickenOvenMeat[0] = new Meat("Breast", Timings.CHICKEN_OVEN_BREAST,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mChickenOvenMeat[1] = new Meat("Thighs", Timings.CHICKEN_OVEN_WINGS_THIGHS,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mChickenOvenMeat[2] = new Meat("Wings", Timings.CHICKEN_OVEN_WINGS_THIGHS,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mChickenOvenMeat[0] = new Meat("Breast", Timings.CHICKEN_OVEN_BREAST, b_null);
+        mChickenOvenMeat[1] = new Meat("Thighs", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_null);
+        mChickenOvenMeat[2] = new Meat("Wings", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_null);
 
         mChickenPanMeat = new Meat[1];
-        mChickenPanMeat[0] = new Meat("Breast", Timings.CHICKEN_PAN_BREAST,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mChickenPanMeat[0] = new Meat("Breast", Timings.CHICKEN_PAN_BREAST, b_null);
 
         mChickenRoastMeat = new Meat[1];
-        mChickenRoastMeat[0] = new Meat("Whole Chicken", false,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mChickenRoastMeat[0] = new Meat("Whole Chicken", false, b_null);
 
         mBeefMeat = new Meat[2];
-        mBeefMeat[0] = new Meat("Beef Burger", Timings.BEEF_BURGERS, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mBeefMeat[1] = new Meat("Roast", false,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mBeefMeat[0] = new Meat("Beef Burger", Timings.BEEF_BURGERS, true, b_null);
+        mBeefMeat[1] = new Meat("Roast", false, b_null);
 
         mFishMeat = new Meat[1];
-        mFishMeat[0] = new Meat("Fish", true,
-                ResourcesCompat.getDrawable(getResources(), R.drawable.fish, null));
+        mFishMeat[0] = new Meat("Fish", true, b_null);
 
         mSteakCategory = new MeatCategory[3];
-        mSteakCategory[0] = new MeatCategory("Fillet",
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakCategory[1] = new MeatCategory("Strip Loin",
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakCategory[2] = new MeatCategory("T-Bone",
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mSteakCategory[0] = new MeatCategory("Fillet", null);
+        mSteakCategory[1] = new MeatCategory("Strip Loin", null);
+        mSteakCategory[2] = new MeatCategory("T-Bone", null);
 
         mSteakFilletMeat = new Meat[4];
-        mSteakFilletMeat[0] = new Meat("Rare", Timings.FILLET_STEAK_RARE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakFilletMeat[1] = new Meat("Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakFilletMeat[2] = new Meat("Medium", Timings.FILLET_STEAK_MEDIUM,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakFilletMeat[3] = new Meat("Well Done", Timings.FILLET_STEAK_WELL_DONE,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mSteakFilletMeat[0] = new Meat("Rare", Timings.FILLET_STEAK_RARE, true, b_null);
+        mSteakFilletMeat[1] = new Meat("Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE, b_null);
+        mSteakFilletMeat[2] = new Meat("Medium", Timings.FILLET_STEAK_MEDIUM, b_null);
+        mSteakFilletMeat[3] = new Meat("Well Done", Timings.FILLET_STEAK_WELL_DONE, b_null);
 
         mSteakTBoneMeat = new Meat[4];
-        mSteakTBoneMeat[0] = new Meat("Rare", Timings.T_BONE_RARE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakTBoneMeat[1] = new Meat("Medium Rare", Timings.T_BONE_MEDIUM_RARE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakTBoneMeat[2] = new Meat("Medium", Timings.T_BONE_MEDIUM, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakTBoneMeat[3] = new Meat("Well Done", Timings.T_BONE_WELL_DONE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mSteakTBoneMeat[0] = new Meat("Rare", Timings.T_BONE_RARE, true, b_null);
+        mSteakTBoneMeat[1] = new Meat("Medium Rare", Timings.T_BONE_MEDIUM_RARE, true, b_null);
+        mSteakTBoneMeat[2] = new Meat("Medium", Timings.T_BONE_MEDIUM, true, b_null);
+        mSteakTBoneMeat[3] = new Meat("Well Done", Timings.T_BONE_WELL_DONE, true, b_null);
 
         mSteakStripLoinMeat = new Meat[4];
-        mSteakStripLoinMeat[0] = new Meat("Rare", Timings.STRIP_LOIN_RARE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakStripLoinMeat[1] = new Meat("Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakStripLoinMeat[2] = new Meat("Medium", Timings.STRIP_LOIN_MEDIUM, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mSteakStripLoinMeat[3] = new Meat("Well Done", Timings.STRIP_LOIN_WELL_DONE, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mSteakStripLoinMeat[0] = new Meat("Rare", Timings.STRIP_LOIN_RARE, true, b_null);
+        mSteakStripLoinMeat[1] = new Meat("Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true, b_null);
+        mSteakStripLoinMeat[2] = new Meat("Medium", Timings.STRIP_LOIN_MEDIUM, true, b_null);
+        mSteakStripLoinMeat[3] = new Meat("Well Done", Timings.STRIP_LOIN_WELL_DONE, true, b_null);
 
         mLambMeat = new Meat[3];
-        mLambMeat[0] = new Meat("Lamb Chops", Timings.LAMB_CHOPS, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mLambMeat[1] = new Meat("Lamb Loin", Timings.LAMB_LOIN, false,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
-        mLambMeat[2] = new Meat("Lamb Burgers", Timings.LAMB_BURGERS, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mLambMeat[0] = new Meat("Lamb Chops", Timings.LAMB_CHOPS, true, b_null);
+        mLambMeat[1] = new Meat("Lamb Loin", Timings.LAMB_LOIN, false, b_null);
+        mLambMeat[2] = new Meat("Lamb Burgers", Timings.LAMB_BURGERS, true, b_null);
 
         mHamMeat = new Meat[1];
-        mHamMeat[0] = new Meat("Roast Ham", false,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mHamMeat[0] = new Meat("Roast Ham", false, b_null);
 
         mPorkMeat = new Meat[1];
-        mPorkMeat[0] = new Meat("hmm...", 0, true,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mPorkMeat[0] = new Meat("hmm...", 0, true, b_null);
 
         mTurkeyMeat = new Meat[1];
-        mTurkeyMeat[0] = new Meat("Roast Turkey", false,
-                ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher, null));
+        mTurkeyMeat[0] = new Meat("Roast Turkey", false, b_null);
     }
 
     @Override
@@ -568,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             String title = null;
-            Drawable image = null;
+            Bitmap image = null;
 
             View view = convertView;
             TextView textTitle;
@@ -641,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 textTitle.setText(title);
-                meatImage.setImageDrawable(image);
+                meatImage.setImageBitmap(Bitmap.createScaledBitmap(image, 120, 120, false));
             }
             return view;
         }
@@ -649,9 +628,9 @@ public class MainActivity extends AppCompatActivity {
 
     private class MeatCategory {
         String name;
-        Drawable image;
+        Bitmap image;
 
-        public MeatCategory(String name, Drawable image) {
+        public MeatCategory(String name, Bitmap image) {
             this.name = name;
             this.image = image;
         }
@@ -659,28 +638,28 @@ public class MainActivity extends AppCompatActivity {
         public String getName() {
             return this.name;
         }
-        public Drawable getImage(){return this.image;}
+        public Bitmap getImage(){return this.image;}
     }
 
     private class Meat {
         String name;
         long duration;
         boolean isFish, isFlip;
-        Drawable image;
+        Bitmap image;
 
-        public Meat(String name, long duration, Drawable image) {
+        public Meat(String name, long duration, Bitmap image) {
             this.name = name;
             this.duration = duration;
             this.image = image;
         }
 
-        public Meat(String name, boolean isFish, Drawable image) {
+        public Meat(String name, boolean isFish, Bitmap image) {
             this.name = name;
             this.isFish = isFish;
             this.image = image;
         }
 
-        public Meat(String name, long duration, boolean isFlip, Drawable image) {
+        public Meat(String name, long duration, boolean isFlip, Bitmap image) {
             this.name = name;
             this.duration = duration;
             this.isFlip = isFlip;
@@ -699,7 +678,7 @@ public class MainActivity extends AppCompatActivity {
             return this.name;
         }
 
-        public Drawable getImage() {
+        public Bitmap getImage() {
             return this.image;
         }
 
