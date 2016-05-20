@@ -28,8 +28,10 @@ public class Timer extends AppCompatActivity {
         timeRemaining = (TextView) findViewById(R.id.time_remaining);
 
         setInitialProgress();
+
         Bundle bundle = getIntent().getExtras();
         final long totalTime = bundle.getLong("TIME");
+        final boolean isFlip = bundle.getBoolean("FLIP");
 
         countDownTimer = new CountDownTimer(totalTime, Timings.ONE_SECOND) {
             @Override

@@ -113,6 +113,31 @@ public class Timings {
     }
 
     /**
+     * Formats a millis representation to that of hh:mm:ss
+     * @param millis millis to elapse
+     * @return representation of millis in given format
+     */
+    public static String formatTime(long millis){
+        String hours = String.valueOf(((millis / ONE_HOUR) % 24));
+        String minutes = String.valueOf(((millis / ONE_MINUTE) % 60));
+        String seconds = String.valueOf(((millis / ONE_SECOND) % 60));
+
+        if(Integer.parseInt(hours) < 10)
+            hours = "0" + hours;
+
+        if(Integer.parseInt(minutes) < 10)
+            minutes = "0" + minutes;
+
+        if(Integer.parseInt(seconds) < 10)
+            seconds = "0" + seconds;
+
+        if(Integer.parseInt(hours) > 0)
+            return hours + ":" + minutes + ":" + seconds;
+
+        return minutes + ":" + seconds;
+    }
+
+    /**
      * Returns the time in millis with respect to the weight of the piece
      * of meat until cooked
      * @param weight weight in grams of the whole chicken

@@ -1,12 +1,13 @@
 package com.glassbyte.meattimer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -32,14 +33,18 @@ public class MainActivity extends AppCompatActivity {
     MeatCategory mCategory[], mCurrentChoice[], mChickenCategory[], mSteakCategory[];
     Meat mChickenBBQMeat[], mChickenOvenMeat[], mChickenPanMeat[], mChickenRoastMeat[],
             mBeefMeat[], mFishMeat[], mSteakFilletMeat[], mSteakTBoneMeat[], mSteakStripLoinMeat[],
-            mLambMeat[], mPorkMeat[], mTurkeyMeat[], mHamMeat[], mCurrentMeat[];
+            mLambMeat[], mTurkeyMeat[], mPigMeat[], mCurrentMeat[];
 
     Bitmap b_chicken, b_cow, b_fish, b_pig, b_sheep;
     Bitmap b_bbq, b_oven, b_pan, b_roast;
-    Bitmap b_strips, b_drumstick, b_null;
+    Bitmap b_strips, b_drumstick, b_null, b_steak, b_beef, b_burger, b_roast_chicken, b_breast;
+
+    Intent mIntent;
+
+    private static final int HEIGHT = 128, WIDTH = 128;
 
     private enum MeatCategories {
-        BEEF, CHICKEN, FISH, HAM, LAMB, PORK, STEAK, TURKEY
+        BEEF, CHICKEN, FISH, LAMB, PIG, STEAK, TURKEY
     }
 
     private enum ChickenCategories {
@@ -56,11 +61,9 @@ public class MainActivity extends AppCompatActivity {
             mStage--;
             switch (mStage) {
                 case 0:
-                    System.out.println("stage 0");
                     mGridView.setAdapter(new Adapter(this));
                     break;
                 default:
-                    System.out.println("stage 1");
                     if (mMeatCategories == MeatCategories.CHICKEN)
                         mGridView.setAdapter(new Adapter(this));
                     else if (mMeatCategories == MeatCategories.BEEF)
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         mGridView.setAdapter(new Adapter(this));
                     else if (mMeatCategories == MeatCategories.TURKEY)
                         mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.PORK)
+                    else if (mMeatCategories == MeatCategories.PIG)
                         mGridView.setAdapter(new Adapter(this));
                     else if (mMeatCategories == MeatCategories.LAMB)
                         mGridView.setAdapter(new Adapter(this));
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mGridView.setExpanded(true);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 System.out.println(mStage);
                 if (mStage == 0) {
                     mCurrentChoice = mCategory;
@@ -115,18 +118,15 @@ public class MainActivity extends AppCompatActivity {
                             setCurrentMeatCategory(MeatCategories.FISH);
                             break;
                         case 3:
-                            setCurrentMeatCategory(MeatCategories.HAM);
-                            break;
-                        case 4:
                             setCurrentMeatCategory(MeatCategories.LAMB);
                             break;
-                        case 5:
-                            setCurrentMeatCategory(MeatCategories.PORK);
+                        case 4:
+                            setCurrentMeatCategory(MeatCategories.PIG);
                             break;
-                        case 6:
+                        case 5:
                             setCurrentMeatCategory(MeatCategories.STEAK);
                             break;
-                        case 7:
+                        case 6:
                             setCurrentMeatCategory(MeatCategories.TURKEY);
                             break;
                     }
@@ -161,9 +161,18 @@ public class MainActivity extends AppCompatActivity {
                         switch (position) {
                             case 0:
                                 //BEEF BURGER
+                                createAlertDialog(mCurrentMeat[position]);
                                 break;
                             case 1:
                                 //ROAST BEEF
+                                MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                                meatDialog.show(getSupportFragmentManager(), "ROAST BEEF");
+                                meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
+                                    @Override
+                                    public void onCookClick(DialogFragment dialogFragment) {
+                                        launchSetTimer(mCurrentMeat[position]);
+                                    }
+                                });
                                 break;
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.FISH) {
@@ -173,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                                 //FISH
                                 break;
                         }
-                    } else if (getCurrentMeatCategory() == MeatCategories.HAM) {
-                        mCurrentMeat = mHamMeat;
+                    } else if (getCurrentMeatCategory() == MeatCategories.PIG) {
+                        mCurrentMeat = mPigMeat;
                         switch (position) {
                             case 0:
                                 //ROAST HAM
@@ -182,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.LAMB) {
                         mCurrentMeat = mLambMeat;
+                        createAlertDialog(mCurrentMeat[position]);
                         switch (position) {
                             case 0:
                                 //CHOPS
@@ -193,15 +203,8 @@ public class MainActivity extends AppCompatActivity {
                                 //BURGERS
                                 break;
                         }
-                    } else if (getCurrentMeatCategory() == MeatCategories.PORK) {
-                        mCurrentMeat = mPorkMeat;
-                        switch (position) {
-                            case 0:
-                                //???
-                                break;
-                        }
                     } else if (getCurrentMeatCategory() == MeatCategories.STEAK) {
-                        switch(position) {
+                        switch (position) {
                             case 0:
                                 setCurrentSteakCategory(SteakCategories.FILLET);
                                 mStage++;
@@ -227,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     if (getCurrentMeatCategory() == MeatCategories.CHICKEN) {
                         if (getCurrentChickenCategory() == ChickenCategories.BBQ) {
                             mCurrentMeat = mChickenBBQMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //BREAST
@@ -246,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else if (getCurrentChickenCategory() == ChickenCategories.OVEN) {
                             mCurrentMeat = mChickenOvenMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //BREAST
@@ -259,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else if (getCurrentChickenCategory() == ChickenCategories.PAN) {
                             mCurrentMeat = mChickenPanMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //BREAST
@@ -272,8 +278,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.STEAK) {
-                        if(getCurrentSteakCategory() == SteakCategories.TBONE) {
+                        if (getCurrentSteakCategory() == SteakCategories.TBONE) {
                             mCurrentMeat = mSteakTBoneMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //RARE
@@ -288,8 +295,9 @@ public class MainActivity extends AppCompatActivity {
                                     //WELL DONE
                                     break;
                             }
-                        } else if(getCurrentSteakCategory() == SteakCategories.STRIPLOIN) {
+                        } else if (getCurrentSteakCategory() == SteakCategories.STRIPLOIN) {
                             mCurrentMeat = mSteakStripLoinMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //RARE
@@ -304,8 +312,9 @@ public class MainActivity extends AppCompatActivity {
                                     //WELL DONE
                                     break;
                             }
-                        } else if(getCurrentSteakCategory() == SteakCategories.FILLET) {
+                        } else if (getCurrentSteakCategory() == SteakCategories.FILLET) {
                             mCurrentMeat = mSteakFilletMeat;
+                            createAlertDialog(mCurrentMeat[position]);
                             switch (position) {
                                 case 0:
                                     //RARE
@@ -322,8 +331,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    Toast.makeText(MainActivity.this, Timings.formatTime(
-                            mCurrentMeat[position].getDuration(), true), Toast.LENGTH_LONG).show();
                     mGridView.setAdapter(mBaseAdapter);
                 }
             }
@@ -335,101 +342,159 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initialiseMeats() {
         //bitmaps
+        initialiseBitmaps();
 
-        int height = 128, width = 128;
+        //categories
+        initialiseCategories();
 
-        b_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.chicken_animal, width, height);
-        b_cow = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.cow_animal, width, height);
-        b_fish = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.fish_2, width, height);
-        b_pig = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pig_animal, width, height);
-        b_sheep = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.sheep_animal, width, height);
+        //meats + subcategories
+        initialiseChickenSubCategories();
+        initialiseBeef();
+        initialiseFish();
+        initialiseSteak();
+        initialiseLamb();
+        initialisePig();
+        initialiseTurkey();
+    }
 
-        b_bbq = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.bbq, width, height);
-        b_oven = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.oven, width, height);
-        b_pan = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pan, width, height);
-        b_roast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, width, height);
+    private void initialiseTurkey() {
+        mTurkeyMeat = new Meat[1];
+        mTurkeyMeat[0] = new Meat("Roast Turkey", false, b_roast_chicken);
+    }
 
-        b_strips = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.strips, width, height);
-        b_drumstick = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.drumstick, width, height);
-        b_null = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.mipmap.ic_launcher, width, height);
+    private void initialisePig() {
+        mPigMeat = new Meat[1];
+        mPigMeat[0] = new Meat("Roast Ham", false, b_beef);
+    }
 
-        mCategory = new MeatCategory[8];
-        mCategory[0] = new MeatCategory("Beef", b_cow);
-        mCategory[1] = new MeatCategory("Chicken", b_chicken);
-        mCategory[2] = new MeatCategory("Fish", b_fish);
-        mCategory[3] = new MeatCategory("Ham", b_pig);
-        mCategory[4] = new MeatCategory("Lamb", b_sheep);
-        mCategory[5] = new MeatCategory("Pork", b_pig);
-        mCategory[6] = new MeatCategory("Steak", b_cow);
-        mCategory[7] = new MeatCategory("Turkey", b_chicken);
+    private void initialiseLamb() {
+        mLambMeat = new Meat[3];
+        mLambMeat[0] = new Meat("Lamb Chops", Timings.LAMB_CHOPS, true, b_steak);
+        mLambMeat[1] = new Meat("Lamb Loin", Timings.LAMB_LOIN, false, b_steak);
+        mLambMeat[2] = new Meat("Lamb Burgers", Timings.LAMB_BURGERS, true, b_burger);
+    }
 
+    private void initialiseSteak() {
+        mSteakCategory = new MeatCategory[3];
+        mSteakCategory[0] = new MeatCategory("Fillet", b_steak);
+        mSteakCategory[1] = new MeatCategory("Strip Loin", b_steak);
+        mSteakCategory[2] = new MeatCategory("T-Bone", b_steak);
+
+        mSteakFilletMeat = new Meat[4];
+        mSteakFilletMeat[0] = new Meat("Rare", Timings.FILLET_STEAK_RARE, true, b_steak);
+        mSteakFilletMeat[1] = new Meat("Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE, b_steak);
+        mSteakFilletMeat[2] = new Meat("Medium", Timings.FILLET_STEAK_MEDIUM, b_steak);
+        mSteakFilletMeat[3] = new Meat("Well Done", Timings.FILLET_STEAK_WELL_DONE, b_steak);
+
+        mSteakTBoneMeat = new Meat[4];
+        mSteakTBoneMeat[0] = new Meat("Rare", Timings.T_BONE_RARE, true, b_steak);
+        mSteakTBoneMeat[1] = new Meat("Medium Rare", Timings.T_BONE_MEDIUM_RARE, true, b_steak);
+        mSteakTBoneMeat[2] = new Meat("Medium", Timings.T_BONE_MEDIUM, true, b_steak);
+        mSteakTBoneMeat[3] = new Meat("Well Done", Timings.T_BONE_WELL_DONE, true, b_steak);
+
+        mSteakStripLoinMeat = new Meat[4];
+        mSteakStripLoinMeat[0] = new Meat("Rare", Timings.STRIP_LOIN_RARE, true, b_steak);
+        mSteakStripLoinMeat[1] = new Meat("Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true, b_steak);
+        mSteakStripLoinMeat[2] = new Meat("Medium", Timings.STRIP_LOIN_MEDIUM, true, b_steak);
+        mSteakStripLoinMeat[3] = new Meat("Well Done", Timings.STRIP_LOIN_WELL_DONE, true, b_steak);
+    }
+
+    private void initialiseFish() {
+        mFishMeat = new Meat[1];
+        mFishMeat[0] = new Meat("Fish", true, b_fish);
+    }
+
+    private void initialiseBeef() {
+        mBeefMeat = new Meat[2];
+        mBeefMeat[0] = new Meat("Beef Burger", Timings.BEEF_BURGERS, true, b_burger);
+        mBeefMeat[1] = new Meat("Roast Beef", false, b_beef);
+    }
+
+    private void initialiseChickenSubCategories() {
         mChickenCategory = new MeatCategory[4];
-        mChickenCategory[0] = new MeatCategory("BBQ", null);
-        mChickenCategory[1] = new MeatCategory("Oven", null);
-        mChickenCategory[2] = new MeatCategory("Pan", null);
-        mChickenCategory[3] = new MeatCategory("Roast", null);
+        mChickenCategory[0] = new MeatCategory("BBQ", b_bbq);
+        mChickenCategory[1] = new MeatCategory("Oven", b_oven);
+        mChickenCategory[2] = new MeatCategory("Pan", b_pan);
+        mChickenCategory[3] = new MeatCategory("Roast", b_roast_chicken);
 
         mChickenBBQMeat = new Meat[5];
-        mChickenBBQMeat[0] = new Meat("Breast", Timings.CHICKEN_BBQ_BREAST, true, b_bbq);
+        mChickenBBQMeat[0] = new Meat("Breast", Timings.CHICKEN_BBQ_BREAST, true, b_breast);
         mChickenBBQMeat[1] = new Meat("Strips", Timings.CHICKEN_BBQ_STRIPS, true, b_strips);
         mChickenBBQMeat[2] = new Meat("Drumsticks", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true, b_drumstick);
         mChickenBBQMeat[3] = new Meat("Thighs", Timings.CHICKEN_BBQ_DRUMSTICKS_THIGHS, true, b_drumstick);
         mChickenBBQMeat[4] = new Meat("Wings", Timings.CHICKEN_BBQ_WINGS, true, b_drumstick);
 
         mChickenOvenMeat = new Meat[3];
-        mChickenOvenMeat[0] = new Meat("Breast", Timings.CHICKEN_OVEN_BREAST, b_null);
-        mChickenOvenMeat[1] = new Meat("Thighs", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_null);
-        mChickenOvenMeat[2] = new Meat("Wings", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_null);
+        mChickenOvenMeat[0] = new Meat("Breast", Timings.CHICKEN_OVEN_BREAST, b_breast);
+        mChickenOvenMeat[1] = new Meat("Thighs", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_drumstick);
+        mChickenOvenMeat[2] = new Meat("Wings", Timings.CHICKEN_OVEN_WINGS_THIGHS, b_drumstick);
 
         mChickenPanMeat = new Meat[1];
-        mChickenPanMeat[0] = new Meat("Breast", Timings.CHICKEN_PAN_BREAST, b_null);
+        mChickenPanMeat[0] = new Meat("Breast", Timings.CHICKEN_PAN_BREAST, b_breast);
 
         mChickenRoastMeat = new Meat[1];
-        mChickenRoastMeat[0] = new Meat("Whole Chicken", false, b_null);
+        mChickenRoastMeat[0] = new Meat("Whole Chicken", false, b_roast_chicken);
+    }
 
-        mBeefMeat = new Meat[2];
-        mBeefMeat[0] = new Meat("Beef Burger", Timings.BEEF_BURGERS, true, b_null);
-        mBeefMeat[1] = new Meat("Roast", false, b_null);
+    private void initialiseCategories() {
+        mCategory = new MeatCategory[7];
+        mCategory[0] = new MeatCategory("Beef", b_cow);
+        mCategory[1] = new MeatCategory("Chicken", b_chicken);
+        mCategory[2] = new MeatCategory("Fish", b_fish);
+        mCategory[3] = new MeatCategory("Lamb", b_sheep);
+        mCategory[4] = new MeatCategory("Porcine", b_pig);
+        mCategory[5] = new MeatCategory("Steak", b_cow);
+        mCategory[6] = new MeatCategory("Turkey", b_chicken);
+    }
 
-        mFishMeat = new Meat[1];
-        mFishMeat[0] = new Meat("Fish", true, b_null);
+    private void initialiseBitmaps() {
+        b_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.chicken_animal, WIDTH, HEIGHT);
+        b_cow = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.cow_animal, WIDTH, HEIGHT);
+        b_fish = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.fish_2, WIDTH, HEIGHT);
+        b_pig = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pig_animal, WIDTH, HEIGHT);
+        b_sheep = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.sheep_animal, WIDTH, HEIGHT);
 
-        mSteakCategory = new MeatCategory[3];
-        mSteakCategory[0] = new MeatCategory("Fillet", null);
-        mSteakCategory[1] = new MeatCategory("Strip Loin", null);
-        mSteakCategory[2] = new MeatCategory("T-Bone", null);
+        b_bbq = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.bbq, WIDTH, HEIGHT);
+        b_oven = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.oven, WIDTH, HEIGHT);
+        b_pan = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pan, WIDTH, HEIGHT);
+        b_roast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, WIDTH, HEIGHT);
 
-        mSteakFilletMeat = new Meat[4];
-        mSteakFilletMeat[0] = new Meat("Rare", Timings.FILLET_STEAK_RARE, true, b_null);
-        mSteakFilletMeat[1] = new Meat("Medium Rare", Timings.FILLET_STEAK_MEDIUM_RARE, b_null);
-        mSteakFilletMeat[2] = new Meat("Medium", Timings.FILLET_STEAK_MEDIUM, b_null);
-        mSteakFilletMeat[3] = new Meat("Well Done", Timings.FILLET_STEAK_WELL_DONE, b_null);
+        b_strips = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.strips, WIDTH, HEIGHT);
+        b_drumstick = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.drumstick, WIDTH, HEIGHT);
+        b_null = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.mipmap.ic_launcher, WIDTH, HEIGHT);
+        b_steak = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.steak, WIDTH, HEIGHT);
+        b_beef = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.beef, WIDTH, HEIGHT);
+        b_burger = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.burger, WIDTH, HEIGHT);
+        b_roast_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, WIDTH, HEIGHT);
+        b_breast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.breast, WIDTH, HEIGHT);
+    }
 
-        mSteakTBoneMeat = new Meat[4];
-        mSteakTBoneMeat[0] = new Meat("Rare", Timings.T_BONE_RARE, true, b_null);
-        mSteakTBoneMeat[1] = new Meat("Medium Rare", Timings.T_BONE_MEDIUM_RARE, true, b_null);
-        mSteakTBoneMeat[2] = new Meat("Medium", Timings.T_BONE_MEDIUM, true, b_null);
-        mSteakTBoneMeat[3] = new Meat("Well Done", Timings.T_BONE_WELL_DONE, true, b_null);
+    void launchSetTimer(Meat meat) {
+        mIntent = new Intent(MainActivity.this, Timer.class);
+        mIntent.putExtra("TIME", meat.getDuration());
+        mIntent.putExtra("FLIP", meat.isFlip());
+        startActivity(mIntent);
+    }
 
-        mSteakStripLoinMeat = new Meat[4];
-        mSteakStripLoinMeat[0] = new Meat("Rare", Timings.STRIP_LOIN_RARE, true, b_null);
-        mSteakStripLoinMeat[1] = new Meat("Medium Rare", Timings.STRIP_LOIN_MEDIUM_RARE, true, b_null);
-        mSteakStripLoinMeat[2] = new Meat("Medium", Timings.STRIP_LOIN_MEDIUM, true, b_null);
-        mSteakStripLoinMeat[3] = new Meat("Well Done", Timings.STRIP_LOIN_WELL_DONE, true, b_null);
+    void createAlertDialog(final Meat meat) {
+        long estimatedEnd = System.currentTimeMillis() + meat.getDuration();
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(meat.getName())
+                .setMessage("This will take around " + Timings.formatTime(meat.getDuration())
+                        + " to cook and will be finished after " +  Timings.formatTime(estimatedEnd, false) + ". "
+                        + "Make sure the appliance has heated up sufficiently!")
+                .setPositiveButton("Cook!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        launchSetTimer(meat);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        mLambMeat = new Meat[3];
-        mLambMeat[0] = new Meat("Lamb Chops", Timings.LAMB_CHOPS, true, b_null);
-        mLambMeat[1] = new Meat("Lamb Loin", Timings.LAMB_LOIN, false, b_null);
-        mLambMeat[2] = new Meat("Lamb Burgers", Timings.LAMB_BURGERS, true, b_null);
-
-        mHamMeat = new Meat[1];
-        mHamMeat[0] = new Meat("Roast Ham", false, b_null);
-
-        mPorkMeat = new Meat[1];
-        mPorkMeat[0] = new Meat("hmm...", 0, true, b_null);
-
-        mTurkeyMeat = new Meat[1];
-        mTurkeyMeat[0] = new Meat("Roast Turkey", false, b_null);
+                    }
+                }).show();
     }
 
     @Override
@@ -497,12 +562,10 @@ public class MainActivity extends AppCompatActivity {
                     count = mBeefMeat.length;
                 } else if (mCurrentMeatCategory == MeatCategories.FISH) {
                     count = mFishMeat.length;
-                } else if (mCurrentMeatCategory == MeatCategories.HAM) {
-                    count = mHamMeat.length;
                 } else if (mCurrentMeatCategory == MeatCategories.LAMB) {
                     count = mLambMeat.length;
-                } else if (mCurrentMeatCategory == MeatCategories.PORK) {
-                    count = mPorkMeat.length;
+                } else if (mCurrentMeatCategory == MeatCategories.PIG) {
+                    count = mPigMeat.length;
                 } else if (mCurrentMeatCategory == MeatCategories.STEAK) {
                     count = mSteakCategory.length;
                 } else if (mCurrentMeatCategory == MeatCategories.TURKEY) {
@@ -544,20 +607,20 @@ public class MainActivity extends AppCompatActivity {
             return 0;
         }
 
+        @SuppressLint({"ViewHolder", "InflateParams"})
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             String title = null;
             Bitmap image = null;
 
-            View view = convertView;
             TextView textTitle;
             ImageView meatImage;
 
-            if (view == null) {
-                view = mLayoutInflater.inflate(R.layout.tile_layout, null);
-                textTitle = (TextView) view.findViewById(R.id.title);
-                meatImage = (ImageView) view.findViewById(R.id.image);
+            convertView = mLayoutInflater.inflate(R.layout.tile_layout, null);
+            textTitle = (TextView) convertView.findViewById(R.id.title);
+            meatImage = (ImageView) convertView.findViewById(R.id.image);
 
+            try {
                 switch (mStage) {
                     case 0:
                         title = mCategory[position].getName();
@@ -573,15 +636,12 @@ public class MainActivity extends AppCompatActivity {
                         } else if (mCurrentMeatCategory == MeatCategories.FISH) {
                             title = mFishMeat[position].getName();
                             image = mFishMeat[position].getImage();
-                        } else if (mCurrentMeatCategory == MeatCategories.HAM) {
-                            title = mHamMeat[position].getName();
-                            image = mHamMeat[position].getImage();
                         } else if (mCurrentMeatCategory == MeatCategories.LAMB) {
                             title = mLambMeat[position].getName();
                             image = mLambMeat[position].getImage();
-                        } else if (mCurrentMeatCategory == MeatCategories.PORK) {
-                            title = mPorkMeat[position].getName();
-                            image = mPorkMeat[position].getImage();
+                        } else if (mCurrentMeatCategory == MeatCategories.PIG) {
+                            title = mPigMeat[position].getName();
+                            image = mPigMeat[position].getImage();
                         } else if (mCurrentMeatCategory == MeatCategories.STEAK) {
                             title = mSteakCategory[position].getName();
                             image = mSteakCategory[position].getImage();
@@ -619,10 +679,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                 }
+            } finally {
                 textTitle.setText(title);
-                meatImage.setImageBitmap(Bitmap.createScaledBitmap(image, 120, 120, false));
+                meatImage.setImageBitmap(Bitmap.createScaledBitmap(image, WIDTH, HEIGHT, false));
             }
-            return view;
+
+            return convertView;
         }
     }
 
@@ -638,7 +700,10 @@ public class MainActivity extends AppCompatActivity {
         public String getName() {
             return this.name;
         }
-        public Bitmap getImage(){return this.image;}
+
+        public Bitmap getImage() {
+            return this.image;
+        }
     }
 
     private class Meat {
@@ -664,6 +729,10 @@ public class MainActivity extends AppCompatActivity {
             this.duration = duration;
             this.isFlip = isFlip;
             this.image = image;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
         }
 
         public boolean isFish() {
