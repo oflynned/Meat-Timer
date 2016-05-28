@@ -2,6 +2,12 @@
     <string name="app_name">MeatTimer</string>
     <string name="action_settings">Settings</string>
 
-    <!-- tips -->
-    <string name="tip_1"></string>
+    <!-- dialogs -->
+    <string name="meat_dialog_set">"This will take around %1$s to cook and will be finished after %2$s."</string>
+    <string name="ensure_heat">"Make sure the appliance has heated up sufficiently!"</string>
+    <string name="cook_btn">Cook!</string>
+    <string name="cancel_btn">Cancel</string>
+
+    <!-- timing screen -->
+    <string name="timer_time_remaining">"%1$s has %2$s remaining"</string>
 </resources>

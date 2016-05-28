@@ -5,7 +5,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ed on 14/12/15.
  */
+
+//TODO fix roast chicken algorithm (overestimation)
+//TODO fix roast beef algorithm (underestimation)
+//TODO add roast lamb implementation
+
 public class Timings {
+
+    public enum Doneness {
+        RARE, MEDIUM, WELL
+    }
 
     //timing nomenclatures
     public static final long ONE_SECOND = 1000;
@@ -186,18 +195,18 @@ public class Timings {
      * @param rareness rareness of final cooked meat
      * @return cooking time in millis
      */
-    public static long getRoastBeefTime(float weight, String rareness){
+    public static long getRoastBeefTime(float weight, Doneness rareness){
         switch(rareness){
-            case "Rare":
+            case RARE:
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF));
-            case "Medium":
+            case MEDIUM:
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +
                         15 * ONE_MINUTE);
-            case "Well Done":
+            case WELL:
                 return (long) ((20 * ONE_MINUTE) +
                         15 * Math.floor(weight / ROAST_BEEF_COEFF) +
                         15 * ((weight % ROAST_BEEF_COEFF) / ROAST_BEEF_COEFF) +

@@ -19,6 +19,8 @@ public class Timer extends AppCompatActivity {
     TextView timeRemaining;
     CountDownTimer countDownTimer;
 
+    Notify notify = new Notify(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,21 +31,32 @@ public class Timer extends AppCompatActivity {
 
         setInitialProgress();
 
-        Bundle bundle = getIntent().getExtras();
-        final long totalTime = bundle.getLong("TIME");
-        final boolean isFlip = bundle.getBoolean("FLIP");
+        final String meat = getIntent().getStringExtra("MEAT");
+        final long totalTime = getIntent().getLongExtra("TIME", 0);
+        final boolean isFlip = getIntent().getBooleanExtra("FLIP", false);
+
+        notify.createNotification(Timings.formatTime(totalTime), meat, Notify.Notification.SET);
 
         countDownTimer = new CountDownTimer(totalTime, Timings.ONE_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
                 String timeLeft = Timings.formatTime(millisUntilFinished, true);
-                timeRemaining.setText(timeLeft + " remaining");
+                notify.updateNotification(timeLeft, meat);
+                timeRemaining.setText(getString(R.string.timer_time_remaining, meat, timeLeft));
                 circularProgressBar.setProgress(getProgress(millisUntilFinished, totalTime));
+
+                if(isFlip) {
+                    if(millisUntilFinished >= totalTime / 2 - Timings.ONE_SECOND &&
+                            millisUntilFinished <= totalTime / 2 + Timings.ONE_SECOND) {
+                        notify.updateNotification(Timings.formatTime(millisUntilFinished), meat);
+                    }
+                }
             }
 
             @Override
             public void onFinish() {
                 timeRemaining.setText("Done!");
+                notify.updateNotification("Done!", meat, Notify.Notification.DONE);
                 setFinalProgress();
             }
         };

@@ -11,6 +11,9 @@ import android.support.v7.app.AlertDialog;
 /**
  * Created by ed on 20/05/16.
  */
+
+//TODO add weight field input
+
 @SuppressLint("ValidFragment")
 public class MeatDialog extends DialogFragment {
 

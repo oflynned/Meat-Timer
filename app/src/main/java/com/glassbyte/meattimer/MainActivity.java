@@ -19,7 +19,10 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.io.Serializable;
+
+//TODO check daylight savings for dialog boxes
 
 public class MainActivity extends AppCompatActivity {
     int mStage = 0;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap b_strips, b_drumstick, b_null, b_steak, b_beef, b_burger, b_roast_chicken, b_breast;
 
     Intent mIntent;
+    Notify notify = new Notify(MainActivity.this);
 
     private static final int HEIGHT = 128, WIDTH = 128;
 
@@ -165,11 +169,15 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 //ROAST BEEF
+                                mCurrentMeat[position].setWeight(3000f);
+
                                 MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
                                 meatDialog.show(getSupportFragmentManager(), "ROAST BEEF");
                                 meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
                                     @Override
                                     public void onCookClick(DialogFragment dialogFragment) {
+                                        mCurrentMeat[position].setDuration(Timings.getRoastBeefTime(
+                                                mCurrentMeat[position].getWeight(), Timings.Doneness.MEDIUM));
                                         launchSetTimer(mCurrentMeat[position]);
                                     }
                                 });
@@ -223,6 +231,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else if (getCurrentMeatCategory() == MeatCategories.TURKEY) {
                         mCurrentMeat = mTurkeyMeat;
+
+                        mCurrentMeat[position].setWeight(4500f);
+                        MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                        meatDialog.show(getSupportFragmentManager(), "ROAST TURKEY");
+                        meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
+                            @Override
+                            public void onCookClick(DialogFragment dialogFragment) {
+                                mCurrentMeat[position].setDuration(Timings.getRoastTurkeyTime(
+                                        mCurrentMeat[position].getWeight()));
+                                launchSetTimer(mCurrentMeat[position]);
+                            }
+                        });
                     }
                     mGridView.setAdapter(mBaseAdapter);
                 } else if (mStage == 2) {
@@ -271,6 +291,18 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                             }
                         } else if (getCurrentChickenCategory() == ChickenCategories.ROAST) {
+                            mCurrentMeat = mChickenRoastMeat;
+                            mCurrentMeat[position].setWeight(1600f);
+                            MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                            meatDialog.show(getSupportFragmentManager(), "ROAST CHICKEN");
+                            meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
+                                @Override
+                                public void onCookClick(DialogFragment dialogFragment) {
+                                    mCurrentMeat[position].setDuration(Timings.getRoastChickenTime(
+                                            mCurrentMeat[position].getWeight()));
+                                    launchSetTimer(mCurrentMeat[position]);
+                                }
+                            });
                             switch (position) {
                                 case 0:
                                     //WHOLE CHICKEN
@@ -469,32 +501,34 @@ public class MainActivity extends AppCompatActivity {
         b_breast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.breast, WIDTH, HEIGHT);
     }
 
-    void launchSetTimer(Meat meat) {
-        mIntent = new Intent(MainActivity.this, Timer.class);
-        mIntent.putExtra("TIME", meat.getDuration());
-        mIntent.putExtra("FLIP", meat.isFlip());
-        startActivity(mIntent);
-    }
-
     void createAlertDialog(final Meat meat) {
         long estimatedEnd = System.currentTimeMillis() + meat.getDuration();
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle(meat.getName())
-                .setMessage("This will take around " + Timings.formatTime(meat.getDuration())
-                        + " to cook and will be finished after " +  Timings.formatTime(estimatedEnd, false) + ". "
-                        + "Make sure the appliance has heated up sufficiently!")
-                .setPositiveButton("Cook!", new DialogInterface.OnClickListener() {
+                .setMessage(getResources().getString(R.string.meat_dialog_set,
+                        Timings.formatTime(meat.getDuration()), Timings.formatTime(estimatedEnd, false)
+                        + "\n" +
+                        getResources().getString(R.string.ensure_heat)))
+                .setPositiveButton(getString(R.string.cook_btn), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         launchSetTimer(meat);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel_btn), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 }).show();
+    }
+
+    void launchSetTimer(Meat meat) {
+        mIntent = new Intent(MainActivity.this, Timer.class);
+        mIntent.putExtra("MEAT", meat.getName());
+        mIntent.putExtra("TIME", meat.getDuration());
+        mIntent.putExtra("FLIP", meat.isFlip());
+        startActivity(mIntent);
     }
 
     @Override
@@ -711,6 +745,7 @@ public class MainActivity extends AppCompatActivity {
         long duration;
         boolean isFish, isFlip;
         Bitmap image;
+        float weight;
 
         public Meat(String name, long duration, Bitmap image) {
             this.name = name;
@@ -753,6 +788,14 @@ public class MainActivity extends AppCompatActivity {
 
         public long getDuration() {
             return this.duration;
+        }
+
+        public void setWeight(float weight) {
+            this.weight = weight;
+        }
+
+        public float getWeight() {
+            return this.weight;
         }
     }
 }
