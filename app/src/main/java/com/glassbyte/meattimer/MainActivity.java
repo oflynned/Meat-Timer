@@ -20,9 +20,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
-
 //TODO check daylight savings for dialog boxes
+//TODO create service for background timing!
 
 public class MainActivity extends AppCompatActivity {
     int mStage = 0;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     Bitmap b_strips, b_drumstick, b_null, b_steak, b_beef, b_burger, b_roast_chicken, b_breast;
 
     Intent mIntent;
-    Notify notify = new Notify(MainActivity.this);
 
     private static final int HEIGHT = 128, WIDTH = 128;
 
@@ -107,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                System.out.println(mStage);
                 if (mStage == 0) {
                     mCurrentChoice = mCategory;
                     mStage++;
@@ -169,15 +166,11 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 //ROAST BEEF
-                                mCurrentMeat[position].setWeight(3000f);
-
-                                MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                                MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName(), true);
                                 meatDialog.show(getSupportFragmentManager(), "ROAST BEEF");
                                 meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
                                     @Override
                                     public void onCookClick(DialogFragment dialogFragment) {
-                                        mCurrentMeat[position].setDuration(Timings.getRoastBeefTime(
-                                                mCurrentMeat[position].getWeight(), Timings.Doneness.MEDIUM));
                                         launchSetTimer(mCurrentMeat[position]);
                                     }
                                 });
@@ -233,13 +226,11 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentMeat = mTurkeyMeat;
 
                         mCurrentMeat[position].setWeight(4500f);
-                        MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                        MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName(), false);
                         meatDialog.show(getSupportFragmentManager(), "ROAST TURKEY");
                         meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
                             @Override
                             public void onCookClick(DialogFragment dialogFragment) {
-                                mCurrentMeat[position].setDuration(Timings.getRoastTurkeyTime(
-                                        mCurrentMeat[position].getWeight()));
                                 launchSetTimer(mCurrentMeat[position]);
                             }
                         });
@@ -293,13 +284,11 @@ public class MainActivity extends AppCompatActivity {
                         } else if (getCurrentChickenCategory() == ChickenCategories.ROAST) {
                             mCurrentMeat = mChickenRoastMeat;
                             mCurrentMeat[position].setWeight(1600f);
-                            MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName());
+                            MeatDialog meatDialog = new MeatDialog(mCurrentMeat[position].getName(), false);
                             meatDialog.show(getSupportFragmentManager(), "ROAST CHICKEN");
                             meatDialog.setMeatListener(new MeatDialog.setMeatListener() {
                                 @Override
                                 public void onCookClick(DialogFragment dialogFragment) {
-                                    mCurrentMeat[position].setDuration(Timings.getRoastChickenTime(
-                                            mCurrentMeat[position].getWeight()));
                                     launchSetTimer(mCurrentMeat[position]);
                                 }
                             });

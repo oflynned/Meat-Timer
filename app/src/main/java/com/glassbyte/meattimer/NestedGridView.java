@@ -16,12 +16,10 @@ public class NestedGridView extends GridView {
     {
         super(context);
     }
-
     public NestedGridView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
-
     public NestedGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
@@ -29,10 +27,8 @@ public class NestedGridView extends GridView {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isExpanded()) {
-            int expandSpec = MeasureSpec.makeMeasureSpec(
-                    Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
+            int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
             super.onMeasure(widthMeasureSpec, expandSpec);
-
             ViewGroup.LayoutParams params = getLayoutParams();
             params.height = getMeasuredHeight();
         } else {

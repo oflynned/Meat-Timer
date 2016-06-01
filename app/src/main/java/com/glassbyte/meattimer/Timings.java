@@ -127,9 +127,9 @@ public class Timings {
      * @return representation of millis in given format
      */
     public static String formatTime(long millis){
-        String hours = String.valueOf(((millis / ONE_HOUR) % 24));
-        String minutes = String.valueOf(((millis / ONE_MINUTE) % 60));
-        String seconds = String.valueOf(((millis / ONE_SECOND) % 60));
+        String hours = String.valueOf((millis / ONE_HOUR) % 24);
+        String minutes = String.valueOf((millis / ONE_MINUTE) % 60);
+        String seconds = String.valueOf((millis / ONE_SECOND) % 60);
 
         if(Integer.parseInt(hours) < 10)
             hours = "0" + hours;

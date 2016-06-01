@@ -1,9 +1,11 @@
 package com.glassbyte.meattimer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ public class Timer extends AppCompatActivity {
     CountDownTimer countDownTimer;
 
     Notify notify = new Notify(this);
+    long timeRemainingValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class Timer extends AppCompatActivity {
         final long totalTime = getIntent().getLongExtra("TIME", 0);
         final boolean isFlip = getIntent().getBooleanExtra("FLIP", false);
 
-        notify.createNotification(Timings.formatTime(totalTime), meat, Notify.Notification.SET);
+        notify.createNotification();
 
         countDownTimer = new CountDownTimer(totalTime, Timings.ONE_SECOND) {
             @Override
@@ -48,9 +51,10 @@ public class Timer extends AppCompatActivity {
                 if(isFlip) {
                     if(millisUntilFinished >= totalTime / 2 - Timings.ONE_SECOND &&
                             millisUntilFinished <= totalTime / 2 + Timings.ONE_SECOND) {
-                        notify.updateNotification(Timings.formatTime(millisUntilFinished), meat);
+                        notify.updateNotification(Timings.formatTime(millisUntilFinished), meat, Notify.Notification.FLIP);
                     }
                 }
+                timeRemainingValue = millisUntilFinished;
             }
 
             @Override
@@ -65,9 +69,30 @@ public class Timer extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
-        startActivity(new Intent(Timer.this, MainActivity.class));
-        finish();
+        if(timeRemainingValue > 0) {
+            new AlertDialog.Builder(Timer.this)
+                    .setTitle("Are you sure you want to cancel this timer?")
+                    .setMessage("Ongoing timers cannot be restored at a later time. Are you sure you want to cancel this timer?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            countDownTimer.cancel();
+                            notify.cancelNotifications();
+                            startActivity(new Intent(Timer.this, MainActivity.class));
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+        } else {
+            countDownTimer.cancel();
+            notify.cancelNotifications();
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     /**

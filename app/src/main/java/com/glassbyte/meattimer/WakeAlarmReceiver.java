@@ -29,21 +29,24 @@ public class WakeAlarmReceiver extends WakefulBroadcastReceiver {
                 new Intent(context, WakeService.class), 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis() + Timings.ONE_MINUTE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), Timings.ONE_MINUTE, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                Timings.ONE_MINUTE, pendingIntent);
 
         //automatically restart service if started on system reboot
         ComponentName componentName = new ComponentName(context, WakeService.class);
         PackageManager packageManager = context.getPackageManager();
-        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
-    public void cancelAlarm(Context context){
+    public void cancelAlarm(Context context) {
         if(alarmManager!=null)
             alarmManager.cancel(pendingIntent);
 
         //disable boot receiver so that there is no reset of alarm at boot
         ComponentName componentName = new ComponentName(context, WakeService.class);
         PackageManager packageManager = context.getPackageManager();
-        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 }

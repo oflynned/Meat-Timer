@@ -1,8 +1,10 @@
 package com.glassbyte.meattimer;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.TypedValue;
 
 /**
  * Created by ed on 16/05/16.
@@ -42,5 +44,10 @@ public class Helpers {
             }
         }
         return inSampleSize;
+    }
+
+    public static int getDp(Context context, int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
     }
 }

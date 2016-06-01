@@ -1,5 +1,6 @@
 package com.glassbyte.meattimer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.test.suitebuilder.annotation.Suppress;
 
 /**
  * Created by ed on 24/01/16.
@@ -24,6 +26,7 @@ public class Settings extends PreferenceActivity {
     //temperature - fahrenheit, celsius, kelvin
     //language - english, irish
 
+    @SuppressLint("ValidFragment")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
