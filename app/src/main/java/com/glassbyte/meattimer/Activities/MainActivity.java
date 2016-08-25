@@ -35,25 +35,22 @@ import com.glassbyte.meattimer.Services.Timings;
 //TODO create service for background timing!
 
 public class MainActivity extends AppCompatActivity {
-    int mStage = 0;
-    NestedGridView mGridView;
-    BaseAdapter mBaseAdapter;
+    private int mStage = 0;
+    private NestedGridView mGridView;
+    private BaseAdapter mBaseAdapter;
 
-    MeatCategories mMeatCategories, mCurrentMeatCategory;
-    ChickenCategories mCurrentChickenCategory;
-    SteakCategories mCurrentSteakCategory;
+    private MeatCategories mCurrentMeatCategory;
+    private ChickenCategories mCurrentChickenCategory;
+    private SteakCategories mCurrentSteakCategory;
 
-    MeatCategory mCategory[], mCurrentChoice[], mChickenCategory[], mSteakCategory[];
-    Meat mChickenBBQMeat[], mChickenOvenMeat[], mChickenPanMeat[], mChickenRoastMeat[],
+    private MeatCategory mCategory[], mCurrentChoice[], mChickenCategory[], mSteakCategory[];
+    private Meat mChickenBBQMeat[], mChickenOvenMeat[], mChickenPanMeat[], mChickenRoastMeat[],
             mBeefMeat[], mFishMeat[], mSteakFilletMeat[], mSteakTBoneMeat[], mSteakStripLoinMeat[],
             mLambMeat[], mTurkeyMeat[], mPigMeat[], mCurrentMeat[];
 
-    Bitmap b_chicken, b_cow, b_fish, b_pig, b_sheep;
-    Bitmap b_bbq, b_oven, b_pan, b_roast;
-    Bitmap b_strips, b_drumstick, b_null, b_steak, b_beef, b_burger, b_roast_chicken, b_breast;
-
-    Intent mIntent;
-
+    private Bitmap b_chicken, b_cow, b_fish, b_pig, b_sheep;
+    private Bitmap b_bbq, b_oven, b_pan, b_roast;
+    private Bitmap b_strips, b_drumstick, b_null, b_steak, b_beef, b_burger, b_roast_chicken, b_breast;
 
     @Override
     public void onBackPressed() {
@@ -74,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Manager.getInstance().setPreference(Manager.Pref.FirstRun, Manager.PrefValue.False.name(), this);
 
-        if (!Manager.getInstance().getPreference(Manager.Pref.FirstRun, this).equals(Manager.PrefValue.True.name())) {
-            System.out.println(Manager.getInstance().getPreference(Manager.Pref.FirstRun, this));
+        if (!Manager.getInstance().getPreference(Manager.Pref.FirstRun, Manager.PrefValue.False, this)
+                .equals(Manager.PrefValue.True.name())) {
             final FirstRunDialog firstRunDialog = new FirstRunDialog(this);
             firstRunDialog.show(getSupportFragmentManager(), "FIRST RUN");
             firstRunDialog.setFirstRunListener(new FirstRunDialog.setFirstRunListener() {
@@ -93,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         mBaseAdapter = new Adapter(MainActivity.this);
         mGridView = (NestedGridView) findViewById(R.id.grid_view);
+
+        assert mGridView!=null;
         mGridView.setNumColumns(3);
         mGridView.setAdapter(mBaseAdapter);
         mGridView.setExpanded(true);
@@ -524,11 +523,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void launchSetTimer(Meat meat) {
-        mIntent = new Intent(MainActivity.this, Timer.class);
-        mIntent.putExtra("MEAT", meat.getName());
-        mIntent.putExtra("TIME", meat.getDuration());
-        mIntent.putExtra("FLIP", meat.isFlip());
-        startActivity(mIntent);
+        Intent intent = new Intent(this, Timer.class);
+        intent.putExtra("MEAT", meat.getName());
+        intent.putExtra("TIME", meat.getDuration());
+        intent.putExtra("FLIP", meat.isFlip());
+        startActivity(intent);
     }
 
     @Override

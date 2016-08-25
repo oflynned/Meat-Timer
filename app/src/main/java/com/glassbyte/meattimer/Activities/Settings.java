@@ -1,18 +1,14 @@
 package com.glassbyte.meattimer.Activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.test.suitebuilder.annotation.Suppress;
+import android.support.v7.app.AlertDialog;
 
 import com.glassbyte.meattimer.R;
 import com.glassbyte.meattimer.Services.Manager;
@@ -36,11 +32,30 @@ public class Settings extends PreferenceActivity {
                 preferenceScreen = getPreferenceManager().createPreferenceScreen(getActivity());
 
                 PreferenceCategory unitCategory = new PreferenceCategory(getActivity());
+                unitCategory.setTitle("Unit Type");
 
                 Preference units = new Preference(getActivity());
                 units.setTitle("Units");
-                units.setSummary(Manager.getInstance().getPreference(Manager.Pref.Units, getActivity()));
+                units.setSummary(Manager.getInstance().getPreference(Manager.Pref.Units, Manager.PrefValue.Metric, getActivity()));
                 units.setKey(Manager.Pref.Units.name());
+
+                //TODO change on click to allow changing of units
+                units.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Preferred Units")
+                                .setMessage(Manager.getInstance().getPreference(Manager.Pref.Units, Manager.PrefValue.Metric, getActivity()))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .show();
+                        return false;
+                    }
+                });
 
                 preferenceScreen.addPreference(unitCategory);
                 unitCategory.addPreference(units);

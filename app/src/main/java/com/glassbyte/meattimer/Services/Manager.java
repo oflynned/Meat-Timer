@@ -23,8 +23,9 @@ public class Manager {
         return manager;
     }
 
-    public String getPreference(Pref pref, Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(pref.name(), "");
+    public String getPreference(Pref pref, PrefValue defaultPref, Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(pref.name(), defaultPref.name());
     }
 
     public void setPreference(Pref pref, String value, Context context) {

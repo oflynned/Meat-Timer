@@ -7,30 +7,23 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.glassbyte.meattimer.Services.Helpers;
-import com.glassbyte.meattimer.Services.Manager;
 
 /**
  * Created by ed on 20/05/16.
  */
 
-//TODO add weight field input
-
 @SuppressLint("ValidFragment")
-public class FirstRunDialog extends DialogFragment {
+public class UnitChangeDialog extends DialogFragment {
 
     private setFirstRunListener firstRunListener = null;
     private Context context;
@@ -40,7 +33,7 @@ public class FirstRunDialog extends DialogFragment {
 
     AlertDialog.Builder alertDialog;
 
-    public FirstRunDialog(Context context) {
+    public UnitChangeDialog(Context context) {
         this.context = context;
     }
 
@@ -61,13 +54,13 @@ public class FirstRunDialog extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        firstRunListener.onClick(FirstRunDialog.this);
+                        firstRunListener.onClick(UnitChangeDialog.this);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getContext(), "No units selected, defaulting to metric", Toast.LENGTH_LONG).show();
+
                     }
                 });
 
@@ -112,7 +105,6 @@ public class FirstRunDialog extends DialogFragment {
         radioGroup.addView(ukUnits);
         radioGroup.addView(usUnits);
         radioGroup.setId(View.generateViewId());
-        radioGroup.check(metricUnits.getId());
     }
 
     @Override

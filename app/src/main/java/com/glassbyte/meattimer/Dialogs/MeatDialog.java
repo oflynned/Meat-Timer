@@ -32,10 +32,6 @@ public class MeatDialog extends DialogFragment {
     private setMeatListener meatDialog = null;
     private Context context;
 
-    private final int SMALL_MARGIN = 8;
-    private final int MEDIUM_MARGIN = 16;
-    private final int LARGE_MARGIN = 24;
-    private final int XL_MARGIN = 32;
     RelativeLayout layout;
     TextView expTimeLabel, expTimeValue, weightLabel, doneLabel;
     EditText weightEntry;
@@ -79,7 +75,7 @@ public class MeatDialog extends DialogFragment {
         RelativeLayout.LayoutParams dialogLayoutParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dialogLayout.setGravity(Gravity.CENTER_VERTICAL);
-        dialogLayout.setPadding(Helpers.getDp(context, LARGE_MARGIN), LARGE_MARGIN, 0, 0);
+        dialogLayout.setPadding(Helpers.getDp(context, Helpers.LARGE_MARGIN), Helpers.LARGE_MARGIN, 0, 0);
         dialogLayout.setLayoutParams(dialogLayoutParams);
 
         generateExpView();
