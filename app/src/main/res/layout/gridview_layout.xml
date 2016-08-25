@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.glassbyte.meattimer.NestedGridView
+    <com.glassbyte.meattimer.Layout.NestedGridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

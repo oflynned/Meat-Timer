@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.glassbyte.meattimer.Services.Notify;
+import com.glassbyte.meattimer.R;
+import com.glassbyte.meattimer.Services.Timings;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 /**
@@ -51,7 +54,7 @@ public class Timer extends AppCompatActivity {
                 if(isFlip) {
                     if(millisUntilFinished >= totalTime / 2 - Timings.ONE_SECOND &&
                             millisUntilFinished <= totalTime / 2 + Timings.ONE_SECOND) {
-                        notify.updateNotification(Timings.formatTime(millisUntilFinished), meat, Notify.Notification.FLIP);
+                        //notify.updateNotification(Timings.formatTime(millisUntilFinished), meat, Notify.Notification.FLIP);
                     }
                 }
                 timeRemainingValue = millisUntilFinished;
@@ -60,7 +63,7 @@ public class Timer extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timeRemaining.setText("Done!");
-                notify.updateNotification("Done!", meat, Notify.Notification.DONE);
+                //notify.updateNotification("Done!", meat, Notify.Notification.DONE);
                 setFinalProgress();
             }
         };

@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Services;
 
 /**
  * Created by ed on 24/01/16.

@@ -1,14 +1,10 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.*;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.glassbyte.meattimer.Services.Helpers;
+import com.glassbyte.meattimer.Services.Timings;
 
 /**
  * Created by ed on 20/05/16.

@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Services;
 
 import android.app.Activity;
 import android.app.ActivityManager;

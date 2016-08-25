@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,6 +19,17 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.glassbyte.meattimer.Dialogs.FirstRunDialog;
+import com.glassbyte.meattimer.Dialogs.MeatDialog;
+import com.glassbyte.meattimer.Enum.ChickenCategories;
+import com.glassbyte.meattimer.Enum.MeatCategories;
+import com.glassbyte.meattimer.Enum.SteakCategories;
+import com.glassbyte.meattimer.Services.Helpers;
+import com.glassbyte.meattimer.Layout.NestedGridView;
+import com.glassbyte.meattimer.R;
+import com.glassbyte.meattimer.Services.Manager;
+import com.glassbyte.meattimer.Services.Timings;
 
 //TODO check daylight savings for dialog boxes
 //TODO create service for background timing!
@@ -43,46 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     Intent mIntent;
 
-    private static final int HEIGHT = 128, WIDTH = 128;
-
-    private enum MeatCategories {
-        BEEF, CHICKEN, FISH, LAMB, PIG, STEAK, TURKEY
-    }
-
-    private enum ChickenCategories {
-        BBQ, OVEN, PAN, ROAST
-    }
-
-    private enum SteakCategories {
-        TBONE, STRIPLOIN, FILLET
-    }
 
     @Override
     public void onBackPressed() {
         if (mStage > 0) {
             mStage--;
-            switch (mStage) {
-                case 0:
-                    mGridView.setAdapter(new Adapter(this));
-                    break;
-                default:
-                    if (mMeatCategories == MeatCategories.CHICKEN)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.BEEF)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.STEAK)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.FISH)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.TURKEY)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.PIG)
-                        mGridView.setAdapter(new Adapter(this));
-                    else if (mMeatCategories == MeatCategories.LAMB)
-                        mGridView.setAdapter(new Adapter(this));
-                    break;
-            }
-            mGridView.setAdapter(mBaseAdapter);
+            mGridView.setAdapter(new Adapter(this));
         } else {
             super.onBackPressed();
         }
@@ -94,6 +71,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Manager.getInstance().setPreference(Manager.Pref.FirstRun, Manager.PrefValue.False.name(), this);
+
+        if (!Manager.getInstance().getPreference(Manager.Pref.FirstRun, this).equals(Manager.PrefValue.True.name())) {
+            System.out.println(Manager.getInstance().getPreference(Manager.Pref.FirstRun, this));
+            final FirstRunDialog firstRunDialog = new FirstRunDialog(this);
+            firstRunDialog.show(getSupportFragmentManager(), "FIRST RUN");
+            firstRunDialog.setFirstRunListener(new FirstRunDialog.setFirstRunListener() {
+                @Override
+                public void onClick(DialogFragment dialogFragment) {
+                    Manager.getInstance().setPreference(Manager.Pref.FirstRun,
+                            Manager.PrefValue.True.name(), getApplicationContext());
+                    Manager.getInstance().setPreference(Manager.Pref.Units,
+                            firstRunDialog.getUnitSelected(), getApplicationContext());
+                }
+            });
+        }
 
         initialiseMeats();
 
@@ -469,25 +463,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initialiseBitmaps() {
-        b_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.chicken_animal, WIDTH, HEIGHT);
-        b_cow = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.cow_animal, WIDTH, HEIGHT);
-        b_fish = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.fish_2, WIDTH, HEIGHT);
-        b_pig = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pig_animal, WIDTH, HEIGHT);
-        b_sheep = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.sheep_animal, WIDTH, HEIGHT);
+        b_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.chicken_animal, Helpers.WIDTH, Helpers.HEIGHT);
+        b_cow = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.cow_animal, Helpers.WIDTH, Helpers.HEIGHT);
+        b_fish = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.fish_2, Helpers.WIDTH, Helpers.HEIGHT);
+        b_pig = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.pig_animal, Helpers.WIDTH, Helpers.HEIGHT);
+        b_sheep = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.sheep_animal, Helpers.WIDTH, Helpers.HEIGHT);
 
-        b_bbq = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.bbq, WIDTH, HEIGHT);
-        b_oven = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.oven, WIDTH, HEIGHT);
-        b_pan = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.pan, WIDTH, HEIGHT);
-        b_roast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, WIDTH, HEIGHT);
+        b_bbq = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.bbq, Helpers.WIDTH, Helpers.HEIGHT);
+        b_oven = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.oven, Helpers.WIDTH, Helpers.HEIGHT);
+        b_pan = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.pan, Helpers.WIDTH, Helpers.HEIGHT);
+        b_roast = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.turkey_2, Helpers.WIDTH, Helpers.HEIGHT);
 
-        b_strips = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.strips, WIDTH, HEIGHT);
-        b_drumstick = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.drumstick, WIDTH, HEIGHT);
-        b_null = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.mipmap.ic_launcher, WIDTH, HEIGHT);
-        b_steak = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.steak, WIDTH, HEIGHT);
-        b_beef = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.beef, WIDTH, HEIGHT);
-        b_burger = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.burger, WIDTH, HEIGHT);
-        b_roast_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.turkey_2, WIDTH, HEIGHT);
-        b_breast = Helpers.decodeSampledBitmapFromResource(this.getResources(), R.drawable.breast, WIDTH, HEIGHT);
+        b_strips = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.strips, Helpers.WIDTH, Helpers.HEIGHT);
+        b_drumstick = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.drumstick, Helpers.WIDTH, Helpers.HEIGHT);
+        b_null = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.mipmap.ic_launcher, Helpers.WIDTH, Helpers.HEIGHT);
+        b_steak = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.steak, Helpers.WIDTH, Helpers.HEIGHT);
+        b_beef = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.beef, Helpers.WIDTH, Helpers.HEIGHT);
+        b_burger = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.burger, Helpers.WIDTH, Helpers.HEIGHT);
+        b_roast_chicken = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.turkey_2, Helpers.WIDTH, Helpers.HEIGHT);
+        b_breast = Helpers.decodeSampledBitmapFromResource(this.getResources(),
+                R.drawable.breast, Helpers.WIDTH, Helpers.HEIGHT);
     }
 
     void createAlertDialog(final Meat meat) {
@@ -704,7 +715,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } finally {
                 textTitle.setText(title);
-                meatImage.setImageBitmap(Bitmap.createScaledBitmap(image, WIDTH, HEIGHT, false));
+                meatImage.setImageBitmap(Bitmap.createScaledBitmap(image, Helpers.WIDTH, Helpers.HEIGHT, false));
             }
 
             return convertView;

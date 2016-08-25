@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Layout;
 
 import android.content.Context;
 import android.util.AttributeSet;

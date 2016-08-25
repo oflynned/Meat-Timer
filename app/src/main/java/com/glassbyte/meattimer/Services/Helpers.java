@@ -1,4 +1,4 @@
-package com.glassbyte.meattimer;
+package com.glassbyte.meattimer.Services;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,6 +10,13 @@ import android.util.TypedValue;
  * Created by ed on 16/05/16.
  */
 public class Helpers {
+    public static final int HEIGHT = 128, WIDTH = 128;
+
+    public static final int SMALL_MARGIN = 8;
+    public static final int MEDIUM_MARGIN = 16;
+    public static final int LARGE_MARGIN = 24;
+    public static final int XL_MARGIN = 32;
+
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
